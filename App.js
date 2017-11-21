@@ -112,6 +112,10 @@ export default class App extends React.Component {
     this.stopRecording();
   }
 
+  doUpload = () => {
+    console.log(this.recording.getURI());
+  }
+
   render() {
     const { isRecording, recordingAvailable, isPlaying } = this.state;
 
@@ -146,6 +150,15 @@ export default class App extends React.Component {
               <View style={styles.buttonStyle}>
                 <Text style={styles.buttonTextStyle}>
                   Delete
+                </Text>
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={this.doUpload}
+            >
+              <View style={styles.buttonStyle}>
+                <Text style={styles.buttonTextStyle}>
+                  Upload
                 </Text>
               </View>
             </TouchableHighlight>
