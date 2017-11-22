@@ -6,7 +6,7 @@ import {
   TouchableHighlight,
   TouchableWithoutFeedback,
 } from 'react-native';
-import Expo, { Audio, AUDIO_RECORDING, Permissions, FileSystem } from 'expo';
+import Expo, { Audio, AUDIO_RECORDING, Permissions, FileSystem, Location } from 'expo';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -91,6 +91,16 @@ export default class App extends React.Component {
     this.setState({ isRecording: false, isWaiting: false, recordingAvailable: true });
   }
 
+  async getLocationAsync() {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      alert('Permission to access location was denied');
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    console.log(location);
+  }
+
   handlePlayClick = async () => {
     if (this.sound) {
       if (this.state.isPlaying) {
@@ -114,6 +124,7 @@ export default class App extends React.Component {
 
   doUpload = () => {
     console.log(this.recording.getURI());
+    this.getLocationAsync();
   }
 
   render() {
