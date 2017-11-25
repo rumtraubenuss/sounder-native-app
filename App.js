@@ -92,13 +92,13 @@ export default class App extends React.Component {
   }
 
   async getLocationAsync() {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       alert('Permission to access location was denied');
     }
 
-    let location = await Location.getCurrentPositionAsync({});
-    console.log(location);
+    const location = await Location.getCurrentPositionAsync({});
+    return location;
   }
 
   handlePlayClick = async () => {
@@ -122,9 +122,36 @@ export default class App extends React.Component {
     this.stopRecording();
   }
 
-  doUpload = () => {
-    console.log(this.recording.getURI());
-    this.getLocationAsync();
+  uploadAudioAsync = async () => {
+    const location = await this.getLocationAsync();
+    console.log(location);
+    const uri = this.recording.getURI();
+    console.log("Uploading " + uri);
+    const apiUrl = 'http://192.168.1.15:4000/upload';
+    const uriParts = uri.split('.');
+    const fileType = uriParts[uriParts.length - 1];
+
+    const formData = new FormData();
+    formData.append('latitude', location.coords.latitude);
+    formData.append('longitude', location.coords.longitude);
+    formData.append('fileType', `audio/x-${fileType}`);
+    formData.append('file', {
+      uri,
+      name: `recording.${fileType}`,
+      type: `audio/x-${fileType}`,
+    });
+
+    const options = {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    console.log("POSTing " + uri + " to " + apiUrl);
+    return fetch(apiUrl, options);
   }
 
   render() {
@@ -165,7 +192,7 @@ export default class App extends React.Component {
               </View>
             </TouchableHighlight>
             <TouchableHighlight
-              onPress={this.doUpload}
+              onPress={this.uploadAudioAsync}
             >
               <View style={styles.buttonStyle}>
                 <Text style={styles.buttonTextStyle}>
