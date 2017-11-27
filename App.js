@@ -127,7 +127,7 @@ export default class App extends React.Component {
     console.log(location);
     const uri = this.recording.getURI();
     console.log("Uploading " + uri);
-    const apiUrl = 'http://192.168.1.15:4000/upload';
+    const apiUrl = 'https://sounder-server.herokuapp.com/upload';
     const uriParts = uri.split('.');
     const fileType = uriParts[uriParts.length - 1];
 
