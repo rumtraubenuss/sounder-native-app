@@ -6,7 +6,14 @@ import {
   TouchableHighlight,
   TouchableWithoutFeedback,
 } from 'react-native';
-import Expo, { Audio, AUDIO_RECORDING, Permissions, FileSystem, Location } from 'expo';
+import Expo, {
+  Audio,
+  AUDIO_RECORDING,
+  Permissions,
+  FileSystem,
+  Location,
+  Constants,
+} from 'expo';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -127,6 +134,7 @@ export default class App extends React.Component {
     console.log(location);
     const uri = this.recording.getURI();
     console.log("Uploading " + uri);
+    //const apiUrl = 'http://192.168.1.15:4000/upload';
     const apiUrl = 'https://sounder-server.herokuapp.com/upload';
     const uriParts = uri.split('.');
     const fileType = uriParts[uriParts.length - 1];
@@ -135,6 +143,7 @@ export default class App extends React.Component {
     formData.append('latitude', location.coords.latitude);
     formData.append('longitude', location.coords.longitude);
     formData.append('fileType', `audio/x-${fileType}`);
+    formData.append('did', Constants.deviceId);
     formData.append('file', {
       uri,
       name: `recording.${fileType}`,
