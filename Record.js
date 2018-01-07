@@ -29,6 +29,15 @@ export class Record extends React.Component {
 
   componentWillMount() {
     this.prepareRecording();
+    console.log('MOUNT')
+  }
+
+  async componentWillUnmount() {
+    try {
+      await this.recording.stopAndUnloadAsync();
+    } catch (error) {
+      // Do nothing -- we are already unloaded.
+    }
   }
 
   prepareRecording = async () => {
